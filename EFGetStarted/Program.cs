@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 using var db = new BloggingContext();
 
 // Note: This sample requires the database to be created before running.
 Console.WriteLine($"Database path: {db.DbPath}.");
 seedTasks(db);
+printincompleteTaksandTodos();
 
 // Create
 Console.WriteLine("Inserting a new blog");
@@ -31,8 +33,27 @@ Console.WriteLine("Delete the blog");
 db.Remove(blog);
 db.SaveChanges();
 
-
-
+void printincompleteTaksandTodos()
+{
+    foreach (Task task in db.Tasks)
+    {
+        bool unfinhedtodos = false;
+        foreach (ToDo todo in task.ToDos)
+        {
+            if (!todo.IsCompleted)
+            {
+                unfinhedtodos = true;
+            }
+        }
+        Console.WriteLine("Task: " + task.Name);
+        foreach (ToDo todo in task.ToDos)
+        { if (!todo.IsCompleted) 
+            {
+                Console.WriteLine("Todo: " + todo.Name);
+            }
+        }
+    }
+}
 static void seedTasks(BloggingContext? db)
 {
     var ProduceSoftware = new Task { Name = "ProduceSoftware", ToDos = { new ToDo { Name = "Write Code" }, new ToDo { Name = "Compile source" }, new ToDo { Name = "Test Program" } } };
