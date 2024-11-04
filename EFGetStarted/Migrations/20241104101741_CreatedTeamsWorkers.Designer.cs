@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EFGetStarted.Migrations
 {
     [DbContext(typeof(BloggingContext))]
-    partial class BloggingContextModelSnapshot : ModelSnapshot
+    [Migration("20241104101741_CreatedTeamsWorkers")]
+    partial class CreatedTeamsWorkers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
@@ -82,22 +85,22 @@ namespace EFGetStarted.Migrations
 
                     b.HasKey("TeamID");
 
-                    b.ToTable("Teams");
+                    b.ToTable("Team");
                 });
 
-            modelBuilder.Entity("TeamWorkers", b =>
+            modelBuilder.Entity("Teamworker", b =>
                 {
-                    b.Property<int>("TeamId")
+                    b.Property<int>("TeamsTeamID")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("WorkerID")
+                    b.Property<int>("TeamsWorkerID")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("TeamId", "WorkerID");
+                    b.HasKey("TeamsTeamID", "TeamsWorkerID");
 
-                    b.HasIndex("WorkerID");
+                    b.HasIndex("TeamsWorkerID");
 
-                    b.ToTable("TeamWorkers");
+                    b.ToTable("Teamworker");
                 });
 
             modelBuilder.Entity("ToDo", b =>
@@ -120,7 +123,7 @@ namespace EFGetStarted.Migrations
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("ToDos");
+                    b.ToTable("ToDo");
                 });
 
             modelBuilder.Entity("worker", b =>
@@ -135,7 +138,7 @@ namespace EFGetStarted.Migrations
 
                     b.HasKey("WorkerID");
 
-                    b.ToTable("workers");
+                    b.ToTable("worker");
                 });
 
             modelBuilder.Entity("Post", b =>
@@ -149,23 +152,19 @@ namespace EFGetStarted.Migrations
                     b.Navigation("Blog");
                 });
 
-            modelBuilder.Entity("TeamWorkers", b =>
+            modelBuilder.Entity("Teamworker", b =>
                 {
-                    b.HasOne("Team", "Team")
-                        .WithMany("Workers")
-                        .HasForeignKey("TeamId")
+                    b.HasOne("Team", null)
+                        .WithMany()
+                        .HasForeignKey("TeamsTeamID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("worker", "worker")
-                        .WithMany("Teams")
-                        .HasForeignKey("WorkerID")
+                    b.HasOne("worker", null)
+                        .WithMany()
+                        .HasForeignKey("TeamsWorkerID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Team");
-
-                    b.Navigation("worker");
                 });
 
             modelBuilder.Entity("ToDo", b =>
@@ -183,16 +182,6 @@ namespace EFGetStarted.Migrations
             modelBuilder.Entity("Task", b =>
                 {
                     b.Navigation("ToDos");
-                });
-
-            modelBuilder.Entity("Team", b =>
-                {
-                    b.Navigation("Workers");
-                });
-
-            modelBuilder.Entity("worker", b =>
-                {
-                    b.Navigation("Teams");
                 });
 #pragma warning restore 612, 618
         }

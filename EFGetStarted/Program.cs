@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.RegularExpressions;
 
 using var db = new BloggingContext();
 
 // Note: This sample requires the database to be created before running.
 Console.WriteLine($"Database path: {db.DbPath}.");
-seedTasks(db);
-printincompleteTaksandTodos();
+seedWorkers(db);
+
 
 // Create
 Console.WriteLine("Inserting a new blog");
@@ -60,6 +62,55 @@ static void seedTasks(BloggingContext? db)
     var BrewCoffee = new Task { Name = "Brew Coffe" , ToDos = { new ToDo { Name = "pour Water" }, new ToDo { Name = "Pour coffee" }, new ToDo { Name = "Turn on" } } };
     db.Add(ProduceSoftware);
     db.Add(BrewCoffee);
+}
+static void seedWorkers(BloggingContext? db)
+{
+    //workers
+    worker Steen = new worker { Name = "Steen Secher" };
+    worker ejvind = new worker { Name = "Ejvind Møller" };
+    worker Konrad = new worker { Name = "Konrad Sommer" };
+    worker Sofus = new worker { Name = "Sofus Lotus" };
+    worker Remo = new worker { Name = "Remo Lademann" };
+    worker Ella = new worker { Name = "Ella Fanth" };
+    worker Anne = new worker { Name = "Anne Dam" };
+
+    //teams
+    Team FrontEnd = new Team { Name = "Frontend" };
+    Team Backend = new Team { Name = "Backend" };
+    Team Testere = new Team { Name = "Testere" };
+
+    TeamWorkers FrontEnd1 = new TeamWorkers
+    { worker = Steen,Team = FrontEnd };
+    TeamWorkers FrontEnd2 = new TeamWorkers
+    { worker = ejvind, Team = FrontEnd };
+    TeamWorkers FrontEnd3 = new TeamWorkers
+    { worker = Konrad, Team = FrontEnd };
+
+    TeamWorkers BackEnd1 = new TeamWorkers
+    { worker = Konrad, Team = Backend };
+    TeamWorkers BackEnd2 = new TeamWorkers
+    { worker = Sofus, Team = Backend };
+    TeamWorkers BackEnd3 = new TeamWorkers
+    { worker = Remo, Team = Backend };
+
+    TeamWorkers Testere1 = new TeamWorkers
+    { worker = Ella, Team = Testere };
+    TeamWorkers Testere2 = new TeamWorkers
+    { worker = Anne, Team = Testere };
+    TeamWorkers Testere3 = new TeamWorkers
+    { worker = Steen, Team = Testere };
 
 
+    db.Add(FrontEnd1);
+    db.Add(FrontEnd1);
+    db.Add(FrontEnd1);
+
+    db.Add(BackEnd1);
+    db.Add(BackEnd2);
+    db.Add(BackEnd3);
+
+    db.Add(Testere1);
+    db.Add(Testere2);
+    db.Add(Testere3);
+    db.SaveChanges();
 }

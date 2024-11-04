@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EFGetStarted.Migrations
 {
     [DbContext(typeof(BloggingContext))]
-    partial class BloggingContextModelSnapshot : ModelSnapshot
+    [Migration("20241104102255_CreatedTeamsWorkers2")]
+    partial class CreatedTeamsWorkers2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
@@ -85,7 +88,7 @@ namespace EFGetStarted.Migrations
                     b.ToTable("Teams");
                 });
 
-            modelBuilder.Entity("TeamWorkers", b =>
+            modelBuilder.Entity("TeamWorker", b =>
                 {
                     b.Property<int>("TeamId")
                         .HasColumnType("INTEGER");
@@ -98,6 +101,21 @@ namespace EFGetStarted.Migrations
                     b.HasIndex("WorkerID");
 
                     b.ToTable("TeamWorkers");
+                });
+
+            modelBuilder.Entity("Teamworker", b =>
+                {
+                    b.Property<int>("TeamsTeamID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("WorkersWorkerID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("TeamsTeamID", "WorkersWorkerID");
+
+                    b.HasIndex("WorkersWorkerID");
+
+                    b.ToTable("Teamworker");
                 });
 
             modelBuilder.Entity("ToDo", b =>
@@ -149,16 +167,16 @@ namespace EFGetStarted.Migrations
                     b.Navigation("Blog");
                 });
 
-            modelBuilder.Entity("TeamWorkers", b =>
+            modelBuilder.Entity("TeamWorker", b =>
                 {
                     b.HasOne("Team", "Team")
-                        .WithMany("Workers")
+                        .WithMany()
                         .HasForeignKey("TeamId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("worker", "worker")
-                        .WithMany("Teams")
+                        .WithMany()
                         .HasForeignKey("WorkerID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -166,6 +184,21 @@ namespace EFGetStarted.Migrations
                     b.Navigation("Team");
 
                     b.Navigation("worker");
+                });
+
+            modelBuilder.Entity("Teamworker", b =>
+                {
+                    b.HasOne("Team", null)
+                        .WithMany()
+                        .HasForeignKey("TeamsTeamID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("worker", null)
+                        .WithMany()
+                        .HasForeignKey("WorkersWorkerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ToDo", b =>
@@ -183,16 +216,6 @@ namespace EFGetStarted.Migrations
             modelBuilder.Entity("Task", b =>
                 {
                     b.Navigation("ToDos");
-                });
-
-            modelBuilder.Entity("Team", b =>
-                {
-                    b.Navigation("Workers");
-                });
-
-            modelBuilder.Entity("worker", b =>
-                {
-                    b.Navigation("Teams");
                 });
 #pragma warning restore 612, 618
         }
