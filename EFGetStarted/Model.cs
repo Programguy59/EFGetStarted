@@ -6,6 +6,8 @@ public class BloggingContext : DbContext
 {
     public DbSet<Blog> Blogs { get; set; }
     public DbSet<Post> Posts { get; set; }
+    public DbSet<ToDo> ToDo { get; set; }
+    public DbSet<Task> Tasks { get; set; }
 
     public string DbPath { get; }
 
@@ -20,6 +22,21 @@ public class BloggingContext : DbContext
     // special "local" folder for your platform.
     protected override void OnConfiguring(DbContextOptionsBuilder options)
         => options.UseSqlite($"Data Source={DbPath}");
+}
+
+public class ToDo
+{   
+    public int ToDoID { get; set; }
+    public string Name { get; set; }
+    public bool IsCompleted { get; set; }
+}
+
+public class Task
+{
+    public int TaskId { get; set; }
+    public string Name { get; set; }
+
+    public List<ToDo> ToDos { get; } = new();
 }
 
 public class Blog
